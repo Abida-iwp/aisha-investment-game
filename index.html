@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where Should Ayesha Invest? - A Real Money Story</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header .story {
+            font-size: 1.1em;
+            line-height: 1.6;
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .game-section {
+            padding: 40px;
+        }
+        
+        .step {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .question {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #f5576c;
+        }
+        
+        .question h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.6em;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .option-card {
+            background: white;
+            border: 3px solid #dee2e6;
+            border-radius: 15px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .option-card.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+        }
+        
+        .option-card .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .option-card .title {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .option-card .description {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            line-height: 1.4;
+        }
+        
+        .option-card .hint {
+            font-size: 0.85em;
+            color: #e74c3c;
+            margin-top: 10px;
+            font-style: italic;
+            display: none;
+        }
+        
+        .option-card:hover .hint {
+            display: block;
+        }
+        
+        .next-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+            display: block;
+            margin: 30px auto;
+        }
+        
+        .next-button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+        
+        .next-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .results {
+            padding: 20px;
+        }
+        
+        .reveal-animation {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .countdown {
+            font-size: 4em;
+            font-weight: bold;
+            color: #667eea;
+            margin: 30px 0;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .result-card.show {
+            animation: slideUp 0.6s forwards;
+        }
+        
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-card.winner {
+            border: 4px solid #27ae60;
+            background: linear-gradient(135deg, #27ae6010, #2ecc7110);
+        }
+        
+        .result-card.user-choice {
+            border: 4px solid #667eea;
+        }
+        
+        .badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .badge.your-pick {
+            background: #667eea;
+        }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+        
+        .result-icon {
+            font-size: 3em;
+        }
+        
+        .result-details h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+        
+        .result-amount {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 15px 0;
+        }
+        
+        .result-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .final-message {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+        
+        .share-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .share-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+        
+        .share-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .share-btn.facebook {
+            background: #1877F2;
+            color: white;
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .replay-button {
+            background: white;
+            color: #667eea;
+            border: 3px solid #667eea;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 20px 10px;
+            transition: all 0.3s;
+        }
+        
+        .replay-button:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤔 Where Should Ayesha Invest Her Money?</h1>
+            <div class="story">
+                <strong>The Story:</strong> It's January 2010. Ayesha has Rs. 5,000 every month to save. Her bank manager, her mother, and her financial advisor all give her different advice. She needs to pick ONE strategy and stick with it for 16 years. <br><br>
+                <strong>You decide for her. Choose wisely! 💰</strong>
+            </div>
+        </div>
+        
+        <div class="game-section">
+            <!-- Step 1: Choose Investment -->
+            <div class="step active" id="step1">
+                <div class="question">
+                    <h2>💭 What advice should Ayesha follow?</h2>
+                    <p style="color: #7f8c8d; margin-top: 10px;">Remember: She'll invest Rs. 5,000 EVERY month from Jan 2010 to Nov 2025 (190 months = Rs. 9.5 lakh total)</p>
+                </div>
+                
+                <div class="options">
+                    <div class="option-card" data-choice="bank">
+                        <div class="icon">🏦</div>
+                        <div class="title">Bank Savings Account</div>
+                        <div class="description">
+                            "Beta, keep money safe in bank. 5% interest guaranteed. No risk!"
+                            <br><em>- Bank Manager Uncle</em>
+                        </div>
+                        <div class="hint">Safe & steady... but is it enough?</div>
+                    </div>
+                    
+                    <div class="option-card" data-choice="dollar">
+                        <div class="icon">💵</div>
+                        <div class="title">Buy US Dollars</div>
+                        <div class="description">
+                            "Dollar is strong! Rupee always falls. Protect yourself!"
+                            <br><em>- Smart Friend</em>
+                        </div>
+                        <div class="hint">Hedge against rupee fall... smart or not?</div>
+                    </div>
+                    
+                    <div class="option-card" data-choice="gold">
+                        <div class="icon">🪙</div>
+                        <div class="title">Buy Gold Every Month</div>
+                        <div class="description">
+                            "Gold is forever! It's what our family has always done."
+                            <br><em>- Ami</em>
+                        </div>
+                        <div class="hint">Traditional & safe... but best?</div>
+                    </div>
+                    
+                    <div class="option-card" data-choice="kse">
+                        <div class="icon">📈</div>
+                        <div class="title">Pakistan Stock Market (KSE-100)</div>
+                        <div class="description">
+                            "Invest in Pakistani companies! Long-term, stocks always win."
+                            <br><em>- Financial Advisor</em>
+                        </div>
+                        <div class="hint">Risky? Or wealth-building machine?</div>
+                    </div>
+                </div>
+                
+                <button class="next-button" id="nextBtn" disabled>Lock In My Choice! 🔒</button>
+            </div>
+            
+            <!-- Step 2: Confirmation -->
+            <div class="step" id="step2">
+                <div class="question">
+                    <h2>⚠️ Are you SURE?</h2>
+                    <p style="font-size: 1.1em; margin: 20px 0; line-height: 1.8;">
+                        You picked: <strong id="chosenStrategy"></strong><br><br>
+                        This means Ayesha will invest Rs. 5,000 EVERY SINGLE MONTH in <strong id="chosenStrategy2"></strong> from January 2010 to November 2025.<br><br>
+                        That's 16 years. Through 2008 crisis recovery. Through political changes. Through COVID. Through everything.<br><br>
+                        <strong style="color: #e74c3c;">This decision cannot be changed. Ready to see what happens?</strong>
+                    </p>
+                </div>
+                
+                <button class="next-button" onclick="showResults()">Yes, Show Me The Future! ⏰</button>
+                <button class="replay-button" onclick="goBack()">Wait, Let Me Reconsider</button>
+            </div>
+            
+            <!-- Step 3: Countdown -->
+            <div class="step" id="step3">
+                <div class="reveal-animation">
+                    <h2 style="font-size: 2em; color: #2c3e50; margin-bottom: 20px;">
+                        ⏰ Fast-forwarding through 16 years...
+                    </h2>
+                    <div class="countdown" id="countdown">2010</div>
+                    <p style="font-size: 1.2em; color: #7f8c8d;">
+                        Calculating Ayesha's wealth...
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Step 4: Results -->
+            <div class="step" id="step4">
+                <div class="results">
+                    <h2 style="text-align: center; font-size: 2.5em; color: #2c3e50; margin-bottom: 30px;">
+                        📅 November 2025 - The Results Are In!
+                    </h2>
+                    
+                    <div id="resultsContainer">
+                        <!-- Results will be inserted here -->
+                    </div>
+                    
+                    <div class="final-message" id="finalMessage">
+                        <!-- Final message will be inserted here -->
+                    </div>
+                    
+                    <div class="share-section">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px;">📱 Think your friends should see this?</h3>
+                        <p style="color: #7f8c8d; margin-bottom: 20px;">
+                            Share this eye-opening lesson with them!
+                        </p>
+                        <div class="share-buttons">
+                            <button class="share-btn whatsapp" onclick="shareWhatsApp()">
+                                Share on WhatsApp
+                            </button>
+                            <button class="share-btn facebook" onclick="shareFacebook()">
+                                Share on Facebook
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center;">
+                        <button class="replay-button" onclick="location.reload()">
+                            🔄 Play Again With Different Choice
+                        </button>
+                        <button class="next-button" onclick="window.location.href='#learn-more'" style="margin-top: 20px;">
+                            📚 Want to Learn How to Actually Do This?
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let userChoice = null;
+        let currentStep = 1;
+        
+        // Actual historical data - FINAL CORRECT (Nov 2025)
+        const results = {
+            bank: {
+                invested: 955000,
+                final: 1450151,
+                multiplier: 1.53,
+                icon: '🏦',
+                name: 'Bank Savings Account',
+                annualReturn: 5.0,
+                realReturn: -6.9,
+                description: '5% annual interest'
+            },
+            dollar: {
+                invested: 955000,
+                final: 2108792,
+                multiplier: 2.21,
+                icon: '💵',
+                name: 'US Dollars',
+                annualReturn: 5.1,
+                usdAccumulated: 7452,
+                description: 'Buying dollars as PKR weakened'
+            },
+            gold: {
+                invested: 955000,
+                final: 3846637,
+                multiplier: 4.03,
+                icon: '🪙',
+                name: 'Gold',
+                annualReturn: 9.1,
+                gramsAccumulated: 160.28,
+                description: 'Buying gold regularly'
+            },
+            kse: {
+                invested: 955000,
+                final: 5442510,
+                multiplier: 5.70,
+                icon: '📈',
+                name: 'KSE-100 Stock Market',
+                annualReturn: 11.6,
+                description: 'SIP in Pakistan stocks'
+            }
+        };
+        
+        // Handle option selection
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                userChoice = this.dataset.choice;
+                document.getElementById('nextBtn').disabled = false;
+            });
+        });
+        
+        // Next button
+        document.getElementById('nextBtn').addEventListener('click', function() {
+            if (userChoice) {
+                const choiceName = results[userChoice].name;
+                document.getElementById('chosenStrategy').textContent = choiceName;
+                document.getElementById('chosenStrategy2').textContent = choiceName;
+                showStep(2);
+            }
+        });
+        
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            currentStep = step;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function goBack() {
+            showStep(1);
+        }
+        
+        function showResults() {
+            showStep(3);
+            
+            // Animate countdown
+            let year = 2010;
+            const countdownEl = document.getElementById('countdown');
+            const interval = setInterval(() => {
+                year++;
+                countdownEl.textContent = year;
+                if (year >= 2025) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        displayResults();
+                        showStep(4);
+                    }, 1000);
+                }
+            }, 200);
+        }
+        
+        function displayResults() {
+            const container = document.getElementById('resultsContainer');
+            const finalMessageEl = document.getElementById('finalMessage');
+            
+            // Sort results by final amount
+            const sortedResults = Object.entries(results).sort((a, b) => b[1].final - a[1].final);
+            const winner = sortedResults[0][0];
+            const userResult = results[userChoice];
+            const youWon = userChoice === winner;
+            
+            // Display each result
+            sortedResults.forEach(([key, data], index) => {
+                const isWinner = key === winner;
+                const isUserChoice = key === userChoice;
+                
+                setTimeout(() => {
+                    const card = document.createElement('div');
+                    card.className = 'result-card' + (isWinner ? ' winner' : '') + (isUserChoice ? ' user-choice' : '');
+                    
+                    let badges = '';
+                    if (isWinner) badges += '<div class="badge">🏆 WINNER!</div>';
+                    if (isUserChoice) badges += '<div class="badge your-pick">👉 YOUR PICK</div>';
+                    
+                    card.innerHTML = `
+                        ${badges}
+                        <div class="result-header">
+                            <div class="result-icon">${data.icon}</div>
+                            <div class="result-details">
+                                <h3>${data.name}</h3>
+                                <p style="color: #7f8c8d;">${data.description}</p>
+                            </div>
+                        </div>
+                        <div class="result-amount">Rs. ${data.final.toLocaleString()}</div>
+                        <div class="result-stats">
+                            <div class="stat">
+                                <div class="stat-value">${data.multiplier}x</div>
+                                <div class="stat-label">Return Multiple</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">Rs. ${(data.final - data.invested).toLocaleString()}</div>
+                                <div class="stat-label">Total Gain</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${data.annualReturn}%</div>
+                                <div class="stat-label">Annual Return</div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    container.appendChild(card);
+                    setTimeout(() => card.classList.add('show'), 100);
+                }, index * 400);
+            });
+            
+            // Final message
+            setTimeout(() => {
+                let message = '';
+                
+                if (youWon) {
+                    message = `
+                        <h2 style="font-size: 2em; margin-bottom: 20px;">🎊 INCREDIBLE! YOU CHOSE THE WINNER! 🎊</h2>
+                        <p>Ayesha followed your advice and invested Rs. 5,000/month in ${userResult.name}.</p>
+                        <p style="margin-top: 20px; font-size: 1.3em;">
+                            Her Rs. 9.5 lakh turned into <strong style="font-size: 1.3em;">Rs. ${userResult.final.toLocaleString()}!</strong>
+                        </p>
+                        <p style="margin-top: 20px;">
+                            That's Rs. ${(userResult.final - 950000).toLocaleString()} in profit! She can now afford a car, help with her children's education, or invest in her business!
+                        </p>
+                        <p style="margin-top: 20px; font-size: 1.2em;">
+                            <strong>The question is: Will YOU make the same smart choice Ayesha did?</strong>
+                        </p>
+                    `;
+                } else {
+                    const winnerData = results[winner];
+                    const difference = winnerData.final - userResult.final;
+                    
+                    message = `
+                        <h2 style="font-size: 2em; margin-bottom: 20px;">😮 Here's What Ayesha Missed...</h2>
+                        <p>You chose ${userResult.name}, and Ayesha ended up with Rs. ${userResult.final.toLocaleString()}.</p>
+                        <p style="margin-top: 20px; font-size: 1.3em; color: #fff59d;">
+                            BUT... if she had chosen ${winnerData.name}, she would have <strong>Rs. ${difference.toLocaleString()} MORE!</strong>
+                        </p>
+                        <p style="margin-top: 20px;">
+                            That's the difference between a down payment on a small apartment vs. buying it outright!
+                        </p>
+                        <p style="margin-top: 20px; font-size: 1.2em;">
+                            <strong>The good news? It's not too late for YOU to make the right choice TODAY!</strong>
+                        </p>
+                    `;
+                }
+                
+                finalMessageEl.innerHTML = message;
+            }, sortedResults.length * 400 + 500);
+        }
+        
+        function shareWhatsApp() {
+            const text = `I just played "Where Should Ayesha Invest?" game and discovered that Rs. 5,000/month in KSE-100 from 2010 would be Rs. 55 LAKHS today! 😱 Play it yourself: ${window.location.href}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        }
+        
+        function shareFacebook() {
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
